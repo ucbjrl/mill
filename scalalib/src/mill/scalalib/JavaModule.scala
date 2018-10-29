@@ -161,7 +161,7 @@ trait JavaModule extends mill.Module with TaskModule { outer =>
     * OS-X and Linux
     */
   def prependShellScript: T[String] = T{
-    mainClass() match{
+    finalMainClassOpt().toOption match{
       case None => ""
       case Some(cls) =>
         val isWin = scala.util.Properties.isWin
@@ -280,7 +280,7 @@ trait JavaModule extends mill.Module with TaskModule { outer =>
   def assembly = T{
     createAssembly(
       Agg.from(localClasspath().map(_.path)),
-      mainClass(),
+      finalMainClassOpt().toOption,
       prependShellScript(),
       Some(upstreamAssembly().path),
       assemblyRules
